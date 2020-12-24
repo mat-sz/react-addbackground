@@ -6,7 +6,7 @@ import { Background } from '../.';
 const App = () => {
   return (
     <div>
-      <Background />
+      <Background type="triangles" backgroundColor="black" />
     </div>
   );
 };
