@@ -65,5 +65,8 @@
   "bugs": {
     "url": "https://github.com/mat-sz/react-addbackground/issues"
   },
-  "homepage": "https://github.com/mat-sz/react-addbackground"
+  "homepage": "https://github.com/mat-sz/react-addbackground",
+  "dependencies": {
+    "addbackground": "^0.0.3"
+  }
 }
