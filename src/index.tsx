@@ -2,14 +2,43 @@ import React, { useEffect, useRef } from 'react';
 import { addBackground, BackgroundControls } from 'addbackground';
 import { backgrounds } from 'addbackground/lib/backgrounds';
 
+export type BackgroundSizeType = 'fill' | { width: number; height: number };
+
 export interface BackgroundProps {
   type: keyof typeof backgrounds;
   primaryColor?: string;
   secondaryColor?: string;
   backgroundColor?: string;
   className?: string;
-  size?: 'fill' | { width: number; height: number };
+  size?: BackgroundSizeType;
 }
+
+const updateSize = (
+  canvas: HTMLCanvasElement | null,
+  size: BackgroundSizeType
+) => {
+  if (!canvas) {
+    return;
+  }
+
+  if (size === 'fill') {
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.right = '0';
+    canvas.style.bottom = '0';
+    canvas.width = canvas.parentElement?.clientWidth || 0;
+    canvas.height = canvas.parentElement?.clientHeight || 0;
+  } else {
+    canvas.style.position = 'relative';
+    canvas.style.top = '';
+    canvas.style.left = '';
+    canvas.style.right = '';
+    canvas.style.bottom = '';
+    canvas.width = size.width;
+    canvas.height = size.height;
+  }
+};
 
 export const Background: React.FC<BackgroundProps> = ({
   type,
@@ -21,6 +50,24 @@ export const Background: React.FC<BackgroundProps> = ({
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const backgroundControlsRef = useRef<BackgroundControls>();
+
+  useEffect(() => {
+    if (!canvasRef.current) {
+      return;
+    }
+
+    updateSize(canvasRef.current, size);
+  }, [size]);
+
+  useEffect(() => {
+    const onResize = () => {
+      updateSize(canvasRef.current, size);
+    };
+
+    window.addEventListener('resize', onResize);
+
+    return () => window.removeEventListener('resize', onResize);
+  }, [size]);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -40,32 +87,6 @@ export const Background: React.FC<BackgroundProps> = ({
       }
     };
   }, [type, primaryColor, secondaryColor, backgroundColor]);
-
-  useEffect(() => {
-    if (!canvasRef.current) {
-      return;
-    }
-
-    if (size === 'fill') {
-      canvasRef.current.style.position = 'absolute';
-      canvasRef.current.style.top = '0';
-      canvasRef.current.style.left = '0';
-      canvasRef.current.style.right = '0';
-      canvasRef.current.style.bottom = '0';
-      canvasRef.current.width =
-        canvasRef.current.parentElement?.clientWidth || 0;
-      canvasRef.current.height =
-        canvasRef.current.parentElement?.clientHeight || 0;
-    } else {
-      canvasRef.current.style.position = 'relative';
-      canvasRef.current.style.top = '';
-      canvasRef.current.style.left = '';
-      canvasRef.current.style.right = '';
-      canvasRef.current.style.bottom = '';
-      canvasRef.current.width = size.width;
-      canvasRef.current.height = size.height;
-    }
-  }, [size]);
 
   return <canvas ref={canvasRef} className={className}></canvas>;
 };

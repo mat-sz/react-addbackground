@@ -5,7 +5,7 @@ import { Background } from '../.';
 
 const App = () => {
   return (
-    <div>
+    <div style={{ minHeight: '400px', position: 'relative' }}>
       <Background type="triangles" backgroundColor="black" />
     </div>
   );
