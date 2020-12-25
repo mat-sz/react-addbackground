@@ -6,7 +6,7 @@ import { backgrounds } from 'addbackground/lib/backgrounds';
 
 const backgroundTypes = Object.keys(backgrounds);
 
-const App = () => {
+const App: React.FC = () => {
   const [backgroundType, setBackgroundType] = useState(backgroundTypes[0]);
 
   return (
